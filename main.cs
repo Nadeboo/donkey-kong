@@ -35,9 +35,11 @@ namespace donkey_kong
         {
             graphicsManager.loadContent();
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            StreamReader sr = new StreamReader("maze");
+            StreamReader sr = new StreamReader("maze.txt");
             text = sr.ReadLine();
             sr.Close();
+            font = Content.Load<SpriteFont>("font");
+
         }
 
         protected override void Update(GameTime gameTime)
@@ -60,6 +62,7 @@ namespace donkey_kong
 
         protected override void Draw(GameTime gameTime)
         {
+            spriteBatch.Begin();
             GraphicsDevice.Clear(Color.CornflowerBlue);
             if (start)
             {
@@ -72,6 +75,7 @@ namespace donkey_kong
             {
                 spriteBatch.DrawString(font, text, new Vector2(100, 100), Color.Black);
             }
+            spriteBatch.End();
             base.Draw(gameTime);
         }
     }
