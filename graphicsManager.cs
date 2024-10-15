@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.VisualBasic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace donkey_kong
 {
@@ -28,9 +30,23 @@ namespace donkey_kong
         {
 
         }
-        public void Draw(SpriteBatch spriteBatch)
+        public void DrawFloor(SpriteBatch spriteBatch)
         {
 
+        }
+        public void DrawWalls(SpriteBatch spriteBatch, SpriteFont font, string text, List<string> strings)
+        {
+            spriteBatch.DrawString(font, text, new Vector2(100,100), Color.Black);
+            for (int i = 0; i < strings.Count; i++)
+            {
+                for (int j = 0; j < strings[i].Length; j++)
+                {
+                    if (strings[i][j] == '1')
+                    {
+                        spriteBatch.Draw(floorTile, new Vector2(50 * j, 50 * i), Color.Green);
+                    }
+                }
+            }
         }
     }
 

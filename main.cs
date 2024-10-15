@@ -19,7 +19,7 @@ namespace donkey_kong
         public bool start = false;
         public SpriteFont font;
         private List<GraphicsManager> tiles;
-        private List<string> strings = new List<string>();
+        public List<string> strings = new List<string>();
 
         public main()
         {
@@ -37,6 +37,7 @@ namespace donkey_kong
         protected override void LoadContent()
         {
             graphicsManager.loadContent();
+            tiles = new List<GraphicsManager>();
             spriteBatch = new SpriteBatch(GraphicsDevice);
             StreamReader sr = new StreamReader("maze.txt");
             text = sr.ReadLine();
@@ -75,23 +76,13 @@ namespace donkey_kong
             {
                 foreach (var tile in tiles)
                 {
-                    tile.Draw(spriteBatch); //tom funktion -> graphicsManager.cs
+                    tile.DrawFloor(spriteBatch); //tom funktion -> graphicsManager.cs
                 }
             }
             else
 
             {
-                spriteBatch.DrawString(font, text, new Vector2(100, 100), Color.Black);
-                for (int i = 0; i < strings.Count; i++)
-                {
-                    for (int j = 0; j < strings[i].Length; j++)
-                    {
-                        if (strings[i][j] == '1')
-                        {
-                            spriteBatch.Draw(graphicsManager.floorTile, new Vector2(50 * j, 50 * i), Color.Green);
-                        }
-                    }
-                }
+                graphicsManager.DrawWalls(spriteBatch, font, text, strings);
             }
             spriteBatch.End();
             base.Draw(gameTime);
