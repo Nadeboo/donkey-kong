@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace donkey_kong
 {
-    public class EnemyManager : gameObject
+    public class EnemyManager : GameObject
     {
         private GraphicsManager graphicsManager;
 

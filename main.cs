@@ -20,6 +20,12 @@ namespace donkey_kong
         public SpriteFont font;
         private List<GraphicsManager> tiles;
         public List<string> strings = new List<string>();
+        Rectangle playerBoundary;
+        int playerSpeed;
+        float x;
+        float y;
+        int fallSpeed;
+        Vector2 initialPosition;
 
         public main()
         {
@@ -36,7 +42,7 @@ namespace donkey_kong
 
         protected override void LoadContent()
         {
-            graphicsManager.loadContent();
+            graphicsManager.LoadContent();
             tiles = new List<GraphicsManager>();
             spriteBatch = new SpriteBatch(GraphicsDevice);
             StreamReader sr = new StreamReader("maze.txt");
@@ -47,6 +53,17 @@ namespace donkey_kong
             }
             sr.Close();
             font = Content.Load<SpriteFont>("font");
+
+                    playerManager = new PlayerManager(
+            graphicsManager,
+            playerBoundary,
+            playerSpeed,
+            graphicsManager.mario,
+            x,
+            y,
+            fallSpeed,
+            initialPosition
+);
 
         }
 
@@ -65,6 +82,7 @@ namespace donkey_kong
             {
                 start = true;
             }
+            
             base.Update(gameTime);
         }
 
@@ -84,7 +102,7 @@ namespace donkey_kong
             {
                 graphicsManager.DrawWalls(spriteBatch, font, text, strings);
             }
-            graphicsManager.drawPlayer(spriteBatch);
+            playerManager.drawPlayer(spriteBatch);
             spriteBatch.End();
             base.Draw(gameTime);
         }

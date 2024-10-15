@@ -1,49 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.VisualBasic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using static System.Net.Mime.MediaTypeNames;
+using System.Collections.Generic;
 
 namespace donkey_kong
 {
     public class GraphicsManager
     {
         private ContentManager content;
-        private PlayerManager playerManager;
-        public Texture2D floorTile;
-        Texture2D wallTile;
-        Texture2D mario;
+        public Texture2D floorTile { get; private set; }
+        public Texture2D wallTile { get; private set; }
+        public Texture2D mario { get; private set; }
+
         public GraphicsManager(ContentManager content)
         {
             this.content = content;
         }
-        public void loadContent()
+
+        public void LoadContent()
         {
             floorTile = content.Load<Texture2D>("floortile");
             wallTile = content.Load<Texture2D>("wallTile");
             mario = content.Load<Texture2D>("SuperMarioFront");
         }
-        public void Update()
-        {
 
-        }
-        public void drawPlayer(SpriteBatch spriteBatch)
-        {
-            spriteBatch.Draw(mario, new Vector2(playerManager.x, playerManager.y), null, Color.Black);
-        }
-        public void DrawFloor(SpriteBatch spriteBatch)
-        {
-
-        }
         public void DrawWalls(SpriteBatch spriteBatch, SpriteFont font, string text, List<string> strings)
         {
-            spriteBatch.DrawString(font, text, new Vector2(100,100), Color.Black);
+            spriteBatch.DrawString(font, text, new Vector2(100, 100), Color.Black);
             for (int i = 0; i < strings.Count; i++)
             {
                 for (int j = 0; j < strings[i].Length; j++)
@@ -55,6 +38,13 @@ namespace donkey_kong
                 }
             }
         }
-    }
 
+        public void DrawFloor(SpriteBatch spriteBatch)
+        {
+        }
+
+        public void Update()
+        {
+        }
+    }
 }

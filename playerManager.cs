@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace donkey_kong
 {
-    public class PlayerManager : gameObject 
+    public class PlayerManager : GameObject 
     {
         private GraphicsManager graphicsManager;
 
@@ -20,9 +20,12 @@ namespace donkey_kong
         ) : base(boundary, speed, sprite, x, y, fallSpeed, pos)
         {
             this.graphicsManager = graphicsManager;
-            this.x = pos.X;
 
 
+        }
+        public void drawPlayer(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(graphicsManager.mario, new Vector2(x, y), null, Color.Black);
         }
 
     }

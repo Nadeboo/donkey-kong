@@ -8,23 +8,23 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace donkey_kong
 {
-    public class gameObject
+    public class GameObject
     {
         public Rectangle Boundary { get; set; }
-        public int Speed { get; set; }
+        public float Speed { get; set; }
         public Texture2D Sprite { get; set; }
         public float x { get; set; }
         public float y { get; set; }
-        public int FallSpeed { get; set; }
+        public float FallSpeed { get; set; }
         public Vector2 Pos { get; set; }
 
-        public gameObject(Rectangle boundary, int speed, Texture2D sprite, int bottomY, int topY, int fallSpeed, Vector2 pos)
+        public GameObject(Rectangle boundary, int speed, Texture2D sprite, float x, float y, int fallSpeed, Vector2 pos)
         {
             Boundary = boundary;
             Speed = speed;
             Sprite = sprite;
-            x = x;
-            y = y;
+            x = Pos.X;
+            y = Pos.Y;
             FallSpeed = fallSpeed;
             Pos = pos;
         }
