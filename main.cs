@@ -84,6 +84,7 @@ namespace donkey_kong
             {
                 graphicsManager.DrawWalls(spriteBatch, font, text, strings);
             }
+            graphicsManager.drawPlayer(spriteBatch);
             spriteBatch.End();
             base.Draw(gameTime);
         }

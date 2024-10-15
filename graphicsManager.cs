@@ -17,6 +17,7 @@ namespace donkey_kong
         private ContentManager content;
         public Texture2D floorTile;
         Texture2D wallTile;
+        Texture2D mario;
         public GraphicsManager(ContentManager content)
         {
             this.content = content;
@@ -25,10 +26,15 @@ namespace donkey_kong
         {
             floorTile = content.Load<Texture2D>("floortile");
             wallTile = content.Load<Texture2D>("wallTile");
+            mario = content.Load<Texture2D>("SuperMarioFront");
         }
         public void Update()
         {
 
+        }
+        public void drawPlayer(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(mario, Vector2.Zero, null, Color.Black);
         }
         public void DrawFloor(SpriteBatch spriteBatch)
         {

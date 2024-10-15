@@ -6,17 +6,22 @@ namespace donkey_kong
 {
     public class EnemyManager : gameObject
     {
-        public EnemyManager() : base(
-            new Rectangle(0, 0, 0, 0),
-            0,
-            null,
-            0,
-            0,
-            0,
-            Vector2.Zero
-        )
+        private GraphicsManager graphicsManager;
+
+        public EnemyManager(
+            GraphicsManager graphicsManager,
+            Rectangle boundary,
+            int speed,
+            Texture2D sprite,
+            int bottomY,
+            int topY,
+            int fallSpeed,
+            Vector2 pos
+        ) : base(boundary, speed, sprite, bottomY, topY, fallSpeed, pos)
         {
+            this.graphicsManager = graphicsManager;
 
         }
+
     }
 }
