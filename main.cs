@@ -1,8 +1,10 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Microsoft.VisualBasic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using System.IO;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace donkey_kong
 {
@@ -17,6 +19,7 @@ namespace donkey_kong
         public bool start = false;
         public SpriteFont font;
         private List<GraphicsManager> tiles;
+        private List<string> strings = new List<string>();
 
         public main()
         {
@@ -37,6 +40,10 @@ namespace donkey_kong
             spriteBatch = new SpriteBatch(GraphicsDevice);
             StreamReader sr = new StreamReader("maze.txt");
             text = sr.ReadLine();
+            while (!sr.EndOfStream)
+            {
+                strings.Add(sr.ReadLine());
+            }
             sr.Close();
             font = Content.Load<SpriteFont>("font");
 
@@ -72,8 +79,19 @@ namespace donkey_kong
                 }
             }
             else
+
             {
                 spriteBatch.DrawString(font, text, new Vector2(100, 100), Color.Black);
+                for (int i = 0; i < strings.Count; i++)
+                {
+                    for (int j = 0; j < strings[i].Length; j++)
+                    {
+                        if (strings[i][j] == '1')
+                        {
+                            spriteBatch.Draw(graphicsManager.floorTile, new Vector2(50 * j, 50 * i), Color.Green);
+                        }
+                    }
+                }
             }
             spriteBatch.End();
             base.Draw(gameTime);

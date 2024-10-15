@@ -13,7 +13,7 @@ namespace donkey_kong
     public class GraphicsManager
     {
         private ContentManager content;
-        Texture2D floorTile;
+        public Texture2D floorTile;
         Texture2D wallTile;
         public GraphicsManager(ContentManager content)
         {
