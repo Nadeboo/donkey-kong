@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace donkey_kong
 {
@@ -23,6 +24,19 @@ namespace donkey_kong
 
 
         }
+        public void move (GameTime gameTime)
+        {
+            KeyboardState keyboardState = Keyboard.GetState();
+            if (keyboardState.IsKeyDown(Keys.Left))
+            {
+                x -= 5;
+            }
+            if (keyboardState.IsKeyDown(Keys.Right))
+            {
+                x += 5;
+            }
+        }
+
         public void drawPlayer(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(graphicsManager.mario, new Vector2(x, y), null, Color.Black);

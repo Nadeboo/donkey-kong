@@ -82,7 +82,8 @@ namespace donkey_kong
             {
                 start = true;
             }
-            
+
+            playerManager.move(gameTime);
             base.Update(gameTime);
         }
 
