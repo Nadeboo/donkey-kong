@@ -15,6 +15,7 @@ namespace donkey_kong
     public class GraphicsManager
     {
         private ContentManager content;
+        private PlayerManager playerManager;
         public Texture2D floorTile;
         Texture2D wallTile;
         Texture2D mario;
@@ -34,7 +35,7 @@ namespace donkey_kong
         }
         public void drawPlayer(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(mario, Vector2.Zero, null, Color.Black);
+            spriteBatch.Draw(mario, new Vector2(playerManager.x, playerManager.y), null, Color.Black);
         }
         public void DrawFloor(SpriteBatch spriteBatch)
         {

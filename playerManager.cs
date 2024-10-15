@@ -13,13 +13,15 @@ namespace donkey_kong
             Rectangle boundary,
             int speed,
             Texture2D sprite,
-            int bottomY,
-            int topY,
+            float x,
+            float y,
             int fallSpeed,
             Vector2 pos
-        ) : base(boundary, speed, sprite, bottomY, topY, fallSpeed, pos)
+        ) : base(boundary, speed, sprite, x, y, fallSpeed, pos)
         {
             this.graphicsManager = graphicsManager;
+            this.x = pos.X;
+
 
         }
 

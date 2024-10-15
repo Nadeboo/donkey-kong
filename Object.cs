@@ -13,8 +13,8 @@ namespace donkey_kong
         public Rectangle Boundary { get; set; }
         public int Speed { get; set; }
         public Texture2D Sprite { get; set; }
-        public int BottomY { get; set; }
-        public int TopY { get; set; }
+        public float x { get; set; }
+        public float y { get; set; }
         public int FallSpeed { get; set; }
         public Vector2 Pos { get; set; }
 
@@ -23,8 +23,8 @@ namespace donkey_kong
             Boundary = boundary;
             Speed = speed;
             Sprite = sprite;
-            BottomY = bottomY;
-            TopY = topY;
+            x = x;
+            y = y;
             FallSpeed = fallSpeed;
             Pos = pos;
         }
