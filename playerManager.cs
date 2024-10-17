@@ -54,6 +54,10 @@ namespace donkey_kong
             {
                 isJumping = false;
                 y -= 1;
+                if (collisionManager.CheckCollision(this))
+                {
+                    y -= 45;
+                }
             }
             else
             {
