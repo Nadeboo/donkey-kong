@@ -10,6 +10,8 @@ namespace donkey_kong
         private GraphicsManager graphicsManager;
         private CollisionManager collisionManager;
         private bool isJumping;
+        private bool isMovingLeft;
+        private bool isMovingRight;
 
         public PlayerManager(
             GraphicsManager graphicsManager,
