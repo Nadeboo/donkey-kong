@@ -9,6 +9,7 @@ namespace donkey_kong
     {
         private GraphicsManager graphicsManager;
         private CollisionManager collisionManager;
+        private bool isJumping;
 
         public PlayerManager(
             GraphicsManager graphicsManager,
@@ -38,17 +39,20 @@ namespace donkey_kong
             {
                 x -= 5;
             }
-            if (KeyboardManager.HasBeenPressed(Keys.Up))
+            if (KeyboardManager.HasBeenPressed(Keys.Up) && isJumping == false)
             {
-                y -= 30;
+                isJumping = true;
+                y -= 45;
             }
             if (keyboardState.IsKeyDown(Keys.Right))
             {
+                isJumping = false;
                 x += 5;
             }
 
             if (collisionManager.CheckCollision(this))
             {
+                isJumping = false;
                 y -= 1;
             }
             else
