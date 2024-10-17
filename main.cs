@@ -26,6 +26,8 @@ namespace donkey_kong
         float y;
         int fallSpeed;
         Vector2 initialPosition;
+        public enum GameState { Start, InGame, GameOver, GameWon }
+        public GameState CurrentGameState;
 
         public main()
         {
@@ -71,40 +73,70 @@ namespace donkey_kong
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-            if (start)
-            {
-                foreach (var tile in tiles)
-                {
-                    tile.Update(); //tom funktion -> graphicsManager.cs
-                }
-            }
             else if (Keyboard.GetState().IsKeyDown(Keys.Enter))
             {
                 start = true;
             }
 
-            playerManager.move(gameTime);
-            base.Update(gameTime);
+            switch (CurrentGameState)
+            {
+                case GameState.Start:
+                    break;
+
+                case GameState.InGame:
+
+                    if (start)
+                    {
+                        foreach (var tile in tiles)
+                        {
+                            tile.Update(); //tom funktion -> graphicsManager.cs
+                        }
+                    }
+                    playerManager.move(gameTime);
+                    base.Update(gameTime);
+                    break;
+
+                case GameState.GameWon:
+                    break;
+
+                case GameState.GameOver:
+                    break;
+            }
+
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            spriteBatch.Begin();
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-            if (start)
+            switch (CurrentGameState)
             {
-                foreach (var tile in tiles)
-                {
-                    tile.DrawFloor(spriteBatch); //tom funktion -> graphicsManager.cs
-                }
-            }
-            else
+                case GameState.Start:
+                    break;
 
-            {
-                graphicsManager.DrawWalls(spriteBatch, font, text, strings);
+                case GameState.InGame:
+                    spriteBatch.Begin();
+                    GraphicsDevice.Clear(Color.CornflowerBlue);
+                    if (start)
+                    {
+                        foreach (var tile in tiles)
+                        {
+                            tile.DrawFloor(spriteBatch); //tom funktion -> graphicsManager.cs
+                        }
+                    }
+                    else
+
+                    {
+                        graphicsManager.DrawWalls(spriteBatch, font, text, strings);
+                    }
+                    playerManager.drawPlayer(spriteBatch);
+                    spriteBatch.End();
+                    break;
+
+                case GameState.GameWon:
+                    break;
+
+                case GameState.GameOver:
+                    break;
             }
-            playerManager.drawPlayer(spriteBatch);
-            spriteBatch.End();
             base.Draw(gameTime);
         }
     }
