@@ -15,6 +15,7 @@ namespace donkey_kong
         private GraphicsManager graphicsManager;
         private EnemyManager enemyManager;
         private PlayerManager playerManager;
+        private CollisionManager collisionManager;
         public string text;
         public bool start = false;
         public SpriteFont font;
@@ -39,6 +40,8 @@ namespace donkey_kong
         protected override void Initialize()
         {
             graphicsManager = new GraphicsManager(Content);
+            collisionManager = new CollisionManager();
+            CurrentGameState = GameState.InGame;
             base.Initialize();
         }
 
@@ -54,10 +57,18 @@ namespace donkey_kong
                 strings.Add(sr.ReadLine());
             }
             sr.Close();
-            font = Content.Load<SpriteFont>("font");
 
-                    playerManager = new PlayerManager(
+            font = Content.Load<SpriteFont>("font");
+            playerBoundary = new Rectangle(100, 100, 50, 50);
+            playerSpeed = 5; 
+            x = playerBoundary.X;
+            y = playerBoundary.Y;
+            fallSpeed = 2; 
+            initialPosition = new Vector2(x, y);
+
+            playerManager = new PlayerManager(
             graphicsManager,
+            collisionManager,
             playerBoundary,
             playerSpeed,
             graphicsManager.mario,
@@ -77,13 +88,14 @@ namespace donkey_kong
             {
                 start = true;
             }
-
+            KeyboardManager.Update();
             switch (CurrentGameState)
             {
                 case GameState.Start:
                     break;
 
                 case GameState.InGame:
+                    collisionManager.UpdateCollisionTiles(strings);
 
                     if (start)
                     {

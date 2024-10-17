@@ -23,10 +23,10 @@ namespace donkey_kong
             Boundary = boundary;
             Speed = speed;
             Sprite = sprite;
-            x = Pos.X;
-            y = Pos.Y;
+            this.x = x;          
+            this.y = y;          
             FallSpeed = fallSpeed;
-            Pos = pos;
+            Pos = pos;           
         }
     }
 }
