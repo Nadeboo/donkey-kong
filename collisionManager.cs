@@ -27,27 +27,16 @@ namespace donkey_kong
             }
         }
 
-        public bool CheckCollision(PlayerManager player)
+        public bool CheckCollision(Rectangle objectBounds)
         {
-            // Create a new rectangle with current position but same size as boundary
-            bool playerIntersectsTiles = false;
-            Rectangle currentBounds = new Rectangle(
-                (int)player.x,
-                (int)player.y,
-                player.Boundary.Width,
-                player.Boundary.Height
-            );
-
             foreach (Rectangle tileRect in collisionTiles)
             {
-                if (currentBounds.Intersects(tileRect))
+                if (objectBounds.Intersects(tileRect))
                 {
-                    playerIntersectsTiles = true;
-                    break;
+                    return true;
                 }
             }
-
-            return playerIntersectsTiles;
+            return false;
         }
     }
 }

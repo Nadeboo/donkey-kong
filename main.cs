@@ -1,10 +1,8 @@
-﻿using Microsoft.VisualBasic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using System.IO;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace donkey_kong
 {
@@ -21,12 +19,6 @@ namespace donkey_kong
         public SpriteFont font;
         private List<GraphicsManager> tiles;
         public List<string> strings = new List<string>();
-        Rectangle playerBoundary;
-        int playerSpeed;
-        float x;
-        float y;
-        int fallSpeed;
-        Vector2 initialPosition;
         public enum GameState { Start, InGame, GameOver, GameWon }
         public GameState CurrentGameState;
 
@@ -59,25 +51,16 @@ namespace donkey_kong
             sr.Close();
 
             font = Content.Load<SpriteFont>("font");
-            playerBoundary = new Rectangle(100, 100, 50, 50);
-            playerSpeed = 5; 
-            x = playerBoundary.X;
-            y = playerBoundary.Y;
-            fallSpeed = 2; 
-            initialPosition = new Vector2(x, y);
+
+            // Create the player
+            Rectangle playerBoundary = new Rectangle(100, 100, 50, 50);
+            Vector2 initialPosition = new Vector2(playerBoundary.X, playerBoundary.Y);
 
             playerManager = new PlayerManager(
-            graphicsManager,
-            collisionManager,
-            playerBoundary,
-            playerSpeed,
-            graphicsManager.mario,
-            x,
-            y,
-            fallSpeed,
-            initialPosition
-);
-
+                playerBoundary,
+                graphicsManager.mario,
+                initialPosition
+            );
         }
 
         protected override void Update(GameTime gameTime)
@@ -101,10 +84,10 @@ namespace donkey_kong
                     {
                         foreach (var tile in tiles)
                         {
-                            tile.Update(); //tom funktion -> graphicsManager.cs
+                            tile.Update();
                         }
                     }
-                    playerManager.move(gameTime);
+                    playerManager.Update(gameTime, collisionManager);
                     base.Update(gameTime);
                     break;
 
@@ -114,7 +97,6 @@ namespace donkey_kong
                 case GameState.GameOver:
                     break;
             }
-
         }
 
         protected override void Draw(GameTime gameTime)
@@ -125,21 +107,20 @@ namespace donkey_kong
                     break;
 
                 case GameState.InGame:
-                    spriteBatch.Begin();
                     GraphicsDevice.Clear(Color.CornflowerBlue);
+                    spriteBatch.Begin();
                     if (start)
                     {
                         foreach (var tile in tiles)
                         {
-                            tile.DrawFloor(spriteBatch); //tom funktion -> graphicsManager.cs
+                            tile.DrawFloor(spriteBatch);
                         }
                     }
                     else
-
                     {
                         graphicsManager.DrawWalls(spriteBatch, font, text, strings);
                     }
-                    playerManager.drawPlayer(spriteBatch);
+                    playerManager.Draw(spriteBatch);
                     spriteBatch.End();
                     break;
 

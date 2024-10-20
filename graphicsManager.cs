@@ -21,7 +21,7 @@ namespace donkey_kong
         {
             floorTile = content.Load<Texture2D>("floortile");
             wallTile = content.Load<Texture2D>("wallTile");
-            mario = content.Load<Texture2D>("SuperMarioFront");
+            mario = content.Load<Texture2D>("mariorectangle");
         }
 
         public void DrawWalls(SpriteBatch spriteBatch, SpriteFont font, string text, List<string> strings)

@@ -1,77 +1,61 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace donkey_kong
 {
-    public class PlayerManager : GameObject 
+    public class PlayerManager : GameObject
     {
-        private GraphicsManager graphicsManager;
-        private CollisionManager collisionManager;
-        private bool isJumping;
-        private bool isMovingLeft;
-        private bool isMovingRight;
+        private const float JumpForce = -100f;
+        private const float MoveSpeed = 50f;
+        private float jumpTimer;
+        private const float JumpDuration = 0.3f; 
 
         public PlayerManager(
-            GraphicsManager graphicsManager,
-            CollisionManager collisionManager,
             Rectangle boundary,
-            int speed,
             Texture2D sprite,
-            float x,
-            float y,
-            int fallSpeed,
-            Vector2 pos
-        ) : base(boundary, speed, sprite, x, y, fallSpeed, pos)
+            Vector2 position
+        ) : base(boundary, sprite, position)
         {
-            this.graphicsManager = graphicsManager;
-            this.collisionManager = collisionManager;
-
-
+            this.Gravity = 50f; 
+            this.MaxFallSpeed = 50f; 
         }
 
-        public void move (GameTime gameTime)
+        public override void Update(GameTime gameTime, CollisionManager collisionManager)
         {
-            x = Pos.X;
-            y = Pos.Y;
+            float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            HandleInput(deltaTime);
+            base.Update(gameTime, collisionManager);
+        }
 
+        private void HandleInput(float deltaTime)
+        {
             KeyboardState keyboardState = Keyboard.GetState();
+
             if (keyboardState.IsKeyDown(Keys.Left))
+                velocity.X = -MoveSpeed;
+            else if (keyboardState.IsKeyDown(Keys.Right))
+                velocity.X = MoveSpeed;
+            else
+                velocity.X = 0;
+
+            if (KeyboardManager.HasBeenPressed(Keys.Up) && isOnGround)
             {
-                x -= 5;
-            }
-            if (KeyboardManager.HasBeenPressed(Keys.Up) && isJumping == false)
-            {
-                isJumping = true;
-                y -= 45;
-            }
-            if (keyboardState.IsKeyDown(Keys.Right))
-            {
-                isJumping = false;
-                x += 5;
+                velocity.Y = JumpForce;
+                jumpTimer = JumpDuration;
+                isOnGround = false;
             }
 
-            if (collisionManager.CheckCollision(this))
+            if (jumpTimer > 0)
             {
-                isJumping = false;
-                y -= 1;
-                if (collisionManager.CheckCollision(this))
+                jumpTimer -= deltaTime;
+                if (jumpTimer <= 0 || !keyboardState.IsKeyDown(Keys.Up))
                 {
-                    y -= 45;
+                    jumpTimer = 0;
+                    if (velocity.Y < 0)
+                        velocity.Y *= 0.5f; 
                 }
             }
-            else
-            {
-                y += 1;
-            }
-            Pos = new Vector2(x, y);
         }
-
-        public void drawPlayer(SpriteBatch spriteBatch)
-        {
-            spriteBatch.Draw(graphicsManager.mario, new Vector2(x, y), null, Color.White);
-        }
-
     }
 }
