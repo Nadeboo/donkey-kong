@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace donkey_kong
 {
-    public class GameObject
+    public class ObjectManager
     {
         public Rectangle Boundary { get; protected set; }
         public Texture2D Sprite { get; protected set; }
@@ -14,7 +14,7 @@ namespace donkey_kong
         protected float MaxFallSpeed = 2000f;
         protected bool isOnGround = false;
 
-        public GameObject(Rectangle boundary, Texture2D sprite, Vector2 position)
+        public ObjectManager(Rectangle boundary, Texture2D sprite, Vector2 position)
         {
             Boundary = boundary;
             Sprite = sprite;

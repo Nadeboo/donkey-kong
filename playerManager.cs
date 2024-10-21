@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace donkey_kong
 {
-    public class PlayerManager : GameObject
+    public class PlayerManager : ObjectManager
     {
         private const float JumpForce = -100f;
         private const float MoveSpeed = 50f;
