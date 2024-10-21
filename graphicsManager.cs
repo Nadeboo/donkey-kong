@@ -11,6 +11,7 @@ namespace donkey_kong
         public Texture2D floorTile { get; private set; }
         public Texture2D wallTile { get; private set; }
         public Texture2D mario { get; private set; }
+        public Texture2D pauline { get; private set; }
 
         public GraphicsManager(ContentManager content)
         {
@@ -21,19 +22,26 @@ namespace donkey_kong
         {
             floorTile = content.Load<Texture2D>("floortile");
             wallTile = content.Load<Texture2D>("wallTile");
-            mario = content.Load<Texture2D>("mariorectangle");
+            mario = content.Load<Texture2D>("mario");
+            pauline = content.Load<Texture2D>("pauline");
         }
 
         public void DrawWalls(SpriteBatch spriteBatch, SpriteFont font, string text, List<string> strings)
         {
-            spriteBatch.DrawString(font, text, new Vector2(100, 100), Color.Black);
+            spriteBatch.DrawString(font, text, new Vector2(100, 100), Color.White);
+
             for (int i = 0; i < strings.Count; i++)
             {
                 for (int j = 0; j < strings[i].Length; j++)
                 {
+                    Vector2 position = new Vector2(50 * j, 50 * i);
                     if (strings[i][j] == '1')
                     {
-                        spriteBatch.Draw(floorTile, new Vector2(50 * j, 50 * i), Color.Green);
+                        spriteBatch.Draw(floorTile, position, Color.White);
+                    }
+                    else
+                    {
+                        spriteBatch.Draw(wallTile, position, Color.White);
                     }
                 }
             }

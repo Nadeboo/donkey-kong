@@ -17,8 +17,8 @@ namespace donkey_kong
             Vector2 position
         ) : base(boundary, sprite, position)
         {
-            this.Gravity = 50f; 
-            this.MaxFallSpeed = 50f; 
+            this.Gravity = 100f; 
+            this.MaxFallSpeed = 100f; 
         }
 
         public override void Update(GameTime gameTime, CollisionManager collisionManager)
