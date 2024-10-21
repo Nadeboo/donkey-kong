@@ -115,6 +115,12 @@ namespace donkey_kong
                             tile.Update();
                         }
                     }
+
+                    if (playerManager.Boundary.Intersects(paulineManager.Boundary))
+                    {
+                        CurrentGameState = GameState.GameWon;
+                    }
+
                     playerManager.Update(gameTime, collisionManager);
                     paulineManager.Update(gameTime, collisionManager);
                     base.Update(gameTime);
