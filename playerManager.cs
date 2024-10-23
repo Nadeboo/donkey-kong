@@ -11,16 +11,19 @@ namespace donkey_kong
         private float jumpTimer;
         private const float JumpDuration = 0.3f;
         private SpriteEffects spriteEffect;
+        private CollisionManager collisionManager;
 
         public PlayerManager(
             Rectangle boundary,
             Texture2D sprite,
-            Vector2 position
+            Vector2 position,
+            CollisionManager collisionManager
         ) : base(boundary, sprite, position)
         {
             this.Gravity = 100f;
             this.MaxFallSpeed = 100f;
             this.spriteEffect = SpriteEffects.None;
+            this.collisionManager = collisionManager;
         }
 
         public override void Update(GameTime gameTime, CollisionManager collisionManager)
@@ -47,6 +50,11 @@ namespace donkey_kong
             else
             {
                 velocity.X = 0;
+            }
+
+            if (keyboardState.IsKeyDown(Keys.Up) && collisionManager.IsOnLadder(Boundary))
+            {
+                Position = new Vector2(Position.X, Position.Y - 45);
             }
 
             if (KeyboardManager.HasBeenPressed(Keys.Up) && isOnGround)

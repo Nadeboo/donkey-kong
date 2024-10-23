@@ -10,6 +10,7 @@ namespace donkey_kong
         private ContentManager content;
         public Texture2D floorTile { get; private set; }
         public Texture2D wallTile { get; private set; }
+        public Texture2D ladderTile { get; private set; }
         public Texture2D mario { get; private set; }
         public Texture2D pauline { get; private set; }
 
@@ -22,6 +23,7 @@ namespace donkey_kong
         {
             floorTile = content.Load<Texture2D>("floortile");
             wallTile = content.Load<Texture2D>("wallTile");
+            ladderTile = content.Load<Texture2D>("ladder");
             mario = content.Load<Texture2D>("mario");
             pauline = content.Load<Texture2D>("pauline");
         }
@@ -29,19 +31,27 @@ namespace donkey_kong
         public void DrawWalls(SpriteBatch spriteBatch, SpriteFont font, string text, List<string> strings)
         {
             spriteBatch.DrawString(font, text, new Vector2(100, 100), Color.White);
-
             for (int i = 0; i < strings.Count; i++)
             {
                 for (int j = 0; j < strings[i].Length; j++)
                 {
                     Vector2 position = new Vector2(50 * j, 50 * i);
-                    if (strings[i][j] == '1')
+                    switch (strings[i][j])
                     {
-                        spriteBatch.Draw(floorTile, position, Color.White);
-                    }
-                    else
-                    {
-                        spriteBatch.Draw(wallTile, position, Color.White);
+                        case 'F':  // Floor
+                            spriteBatch.Draw(floorTile, position, Color.White);
+                            break;
+                        case '=':  // Ladder
+                            spriteBatch.Draw(ladderTile, position, Color.White);
+                            break;
+                        case 'M':  // Mario's starting position
+                        case 'P':  // Pauline's starting position
+                            spriteBatch.Draw(floorTile, position, Color.White);
+                            break;
+                        case 'w':  // Wall
+                        default:   // Any other character becomes a wall
+                            spriteBatch.Draw(wallTile, position, Color.White);
+                            break;
                     }
                 }
             }

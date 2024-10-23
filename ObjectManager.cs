@@ -8,7 +8,7 @@ namespace donkey_kong
     {
         public Rectangle Boundary { get; protected set; }
         public Texture2D Sprite { get; protected set; }
-        public Vector2 Position { get; protected set; }
+        public Vector2 Position { get; set; }
         protected Vector2 velocity;
         protected float Gravity = 980f;
         protected float MaxFallSpeed = 2000f;

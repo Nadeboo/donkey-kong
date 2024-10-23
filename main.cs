@@ -56,10 +56,11 @@ namespace donkey_kong
         {
             graphicsManager.LoadContent();
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            paulineManager = new PaulineManager(graphicsManager, screenWidth);
             youwin = Content.Load<Texture2D>("youwin");
             youlose = Content.Load<Texture2D>("youlose");
             startTexture = Content.Load<Texture2D>("bender");
+
+
 
             tiles = new List<GraphicsManager>();
             StreamReader sr = new StreamReader("maze.txt");
@@ -70,18 +71,48 @@ namespace donkey_kong
             }
             sr.Close();
 
+            Vector2 marioPosition = FindCharacterPosition(strings, 'M');
+            Vector2 paulinePosition = FindCharacterPosition(strings, 'P');
+
             font = Content.Load<SpriteFont>("font");
 
             // Create the player
-            Rectangle playerBoundary = new Rectangle((screenWidth / 2) - 25, screenHeight - 400, 50, 50);
+            Rectangle playerBoundary = new Rectangle(
+                (int)marioPosition.X,
+                (int)marioPosition.Y,
+                50,
+                50
+            );
             Vector2 initialPosition = new Vector2(playerBoundary.X, playerBoundary.Y);
 
             playerManager = new PlayerManager(
                 playerBoundary,
                 graphicsManager.mario,
-                initialPosition
+                marioPosition,
+                collisionManager
             );
+
+            paulineManager = new PaulineManager(graphicsManager, screenWidth)
+            {
+                Position = paulinePosition
+            };
+
             startButton = new StartButton(Content, screenWidth, screenHeight);
+        }
+
+        private Vector2 FindCharacterPosition(List<string> mapData, char character)
+        {
+            for (int i = 0; i < mapData.Count; i++)
+            {
+                for (int j = 0; j < mapData[i].Length; j++)
+                {
+                    if (mapData[i][j] == character)
+                    {
+                        return new Vector2(50 * j, 50 * i);
+                    }
+                }
+            }
+            return Vector2.Zero; // Default position if character not found
         }
 
         protected override void Update(GameTime gameTime)
@@ -166,11 +197,15 @@ namespace donkey_kong
                     break;
 
                 case GameState.GameWon:
+                    spriteBatch.Begin();
                     spriteBatch.Draw(youwin, Vector2.Zero, Color.White);
+                    spriteBatch.End();
                     break;
 
                 case GameState.GameOver:
+                    spriteBatch.Begin();
                     spriteBatch.Draw(youlose, Vector2.Zero, Color.White);
+                    spriteBatch.End();
                     break;
             }
             base.Draw(gameTime);
