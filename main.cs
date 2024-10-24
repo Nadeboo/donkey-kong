@@ -20,7 +20,7 @@ namespace donkey_kong
         private Texture2D startTexture;
 
         // Game object managers
-        private EnemyManager enemyManager;
+        private List<EnemyManager> enemies;  // Changed to list
         private PlayerManager playerManager;
         private PaulineManager paulineManager;
         private CollisionManager collisionManager;
@@ -40,7 +40,6 @@ namespace donkey_kong
         private Vector2 marioPosition;
         private Vector2 paulinePosition;
         private Vector2 InitialMarioPosition;
-        private int lives;
 
         public main()
         {
@@ -53,7 +52,8 @@ namespace donkey_kong
         {
             graphicsManager = new GraphicsManager(Content);
             collisionManager = new CollisionManager();
-            CurrentGameState = GameState.Start;
+            enemies = new List<EnemyManager>();  // Initialize enemy list
+            CurrentGameState = GameState.InGame;
             base.Initialize();
         }
 
@@ -64,9 +64,6 @@ namespace donkey_kong
             youwin = Content.Load<Texture2D>("youwin");
             youlose = Content.Load<Texture2D>("youlose");
             startTexture = Content.Load<Texture2D>("bender");
-            lives = 3;
-
-
 
             tiles = new List<GraphicsManager>();
             StreamReader sr = new StreamReader("maze.txt");
@@ -79,9 +76,31 @@ namespace donkey_kong
 
             Vector2 marioPosition = FindCharacterPosition(strings, 'M');
             Vector2 paulinePosition = FindCharacterPosition(strings, 'P');
-            Vector2 enemyPosition = FindCharacterPosition(strings, 'E');
 
+            // Create all enemies
+            for (int i = 0; i < strings.Count; i++)
+            {
+                for (int j = 0; j < strings[i].Length; j++)
+                {
+                    if (strings[i][j] == 'E')
+                    {
+                        Vector2 enemyPos = new Vector2(50 * j, 50 * i);
+                        Rectangle enemyBoundary = new Rectangle(
+                            (int)enemyPos.X,
+                            (int)enemyPos.Y,
+                            76,  // Enemy sprite width
+                            40   // Enemy sprite height
+                        );
 
+                        enemies.Add(new EnemyManager(
+                            enemyBoundary,
+                            graphicsManager.enemy,
+                            enemyPos,
+                            collisionManager
+                        ));
+                    }
+                }
+            }
 
             font = Content.Load<SpriteFont>("font");
 
@@ -93,12 +112,6 @@ namespace donkey_kong
                 50
             );
 
-            Rectangle enemyBoundary = new Rectangle(
-                (int)enemyPosition.X,
-                (int)enemyPosition.Y,
-                50,
-                50
-            );
             Vector2 initialPosition = new Vector2(playerBoundary.X, playerBoundary.Y);
 
             playerManager = new PlayerManager(
@@ -107,14 +120,6 @@ namespace donkey_kong
                 marioPosition,
                 collisionManager
             );
-
-            enemyManager = new EnemyManager(
-                enemyBoundary,
-                graphicsManager.enemy,
-                enemyPosition,
-                collisionManager
-            );
-
 
             paulineManager = new PaulineManager(graphicsManager, screenWidth)
             {
@@ -136,7 +141,7 @@ namespace donkey_kong
                     }
                 }
             }
-            return Vector2.Zero; // Default position if character not found
+            return Vector2.Zero;
         }
 
         protected override void Update(GameTime gameTime)
@@ -176,14 +181,17 @@ namespace donkey_kong
                         CurrentGameState = GameState.GameWon;
                     }
 
-                    if (playerManager.Boundary.Intersects(enemyManager.Boundary))
+                    // Update all enemies
+                    foreach (var enemy in enemies)
                     {
-                        lives = lives - 1;
-                    }
+                        enemy.Update(gameTime, collisionManager);
 
-                    if (lives == 0)
-                    {
-                        CurrentGameState = GameState.GameOver;
+                        // Check for collision with player
+                        if (enemy.Boundary.Intersects(playerManager.Boundary))
+                        {
+                            CurrentGameState = GameState.GameOver;
+                            break;
+                        }
                     }
 
                     playerManager.Update(gameTime, collisionManager);
@@ -192,6 +200,7 @@ namespace donkey_kong
                     break;
 
                 case GameState.GameWon:
+                case GameState.GameOver:
                     if (keyboardState.IsKeyDown(Keys.R))
                     {
                         CurrentGameState = GameState.InGame;
@@ -227,9 +236,15 @@ namespace donkey_kong
                     {
                         graphicsManager.DrawWalls(spriteBatch, font, text, strings);
                     }
+
+                    // Draw all enemies
+                    foreach (var enemy in enemies)
+                    {
+                        enemy.Draw(spriteBatch);
+                    }
+
                     playerManager.Draw(spriteBatch);
                     paulineManager.Draw(spriteBatch);
-                    enemyManager.Draw(spriteBatch);
                     spriteBatch.End();
                     break;
 

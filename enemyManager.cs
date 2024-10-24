@@ -19,8 +19,8 @@ namespace donkey_kong
             CollisionManager collisionManager
         ) : base(boundary, sprite, position)
         {
-            this.Gravity = 100f;
-            this.MaxFallSpeed = 100f;
+            this.Gravity = 0f;
+            this.MaxFallSpeed = 0f;
             this.spriteEffect = SpriteEffects.None;
             this.collisionManager = collisionManager;
         }
@@ -29,9 +29,20 @@ namespace donkey_kong
         {
             base.Update(gameTime, collisionManager);
         }
-        public  void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Sprite, Position, null, Color.White, 0f, Vector2.Zero, 1f, spriteEffect, 0f);
+            //Console.WriteLine($"Enemy Sprite null?: {Sprite == null}");
+            //Console.WriteLine($"Position: {Position}");
+
+            // Try the most basic possible draw call
+            if (Sprite != null)
+            {
+                spriteBatch.Draw(
+                    Sprite,
+                    new Rectangle((int)Position.X, (int)Position.Y, 76, 40),
+                    Color.White
+                );
+            }
         }
     }
 

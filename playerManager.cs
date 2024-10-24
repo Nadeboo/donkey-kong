@@ -1,13 +1,16 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace donkey_kong
 {
     public class PlayerManager : ObjectManager
     {
         private const float JumpForce = -100f;
-        private const float MoveSpeed = 50f;
+        private const float MoveDelay = 0.5f; // Half second delay between moves
+        private const int GridSize = 50; // Size of each movement step
+        private float moveTimer = 0f; // Timer to track movement delay
         private float jumpTimer;
         private const float JumpDuration = 0.3f;
         private SpriteEffects spriteEffect;
@@ -20,8 +23,8 @@ namespace donkey_kong
             CollisionManager collisionManager
         ) : base(boundary, sprite, position)
         {
-            this.Gravity = 100f;
-            this.MaxFallSpeed = 100f;
+            this.Gravity = 0f;
+            this.MaxFallSpeed = 0f;
             this.spriteEffect = SpriteEffects.None;
             this.collisionManager = collisionManager;
         }
@@ -29,6 +32,13 @@ namespace donkey_kong
         public override void Update(GameTime gameTime, CollisionManager collisionManager)
         {
             float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            // Update move timer
+            if (moveTimer > 0)
+            {
+                moveTimer -= deltaTime;
+            }
+
             HandleInput(deltaTime);
             base.Update(gameTime, collisionManager);
         }
@@ -37,27 +47,44 @@ namespace donkey_kong
         {
             KeyboardState keyboardState = Keyboard.GetState();
 
-            if (keyboardState.IsKeyDown(Keys.Left))
+            // Only process movement if the timer has expired
+            if (moveTimer <= 0)
             {
-                velocity.X = -MoveSpeed;
-                spriteEffect = SpriteEffects.FlipHorizontally; 
-            }
-            else if (keyboardState.IsKeyDown(Keys.Right))
-            {
-                velocity.X = MoveSpeed;
-                spriteEffect = SpriteEffects.None; 
-            }
-            else
-            {
-                velocity.X = 0;
+                Vector2 targetPosition = Position;
+                bool shouldMove = false;
+
+                if (keyboardState.IsKeyDown(Keys.Left))
+                {
+                    targetPosition.X -= GridSize;
+                    spriteEffect = SpriteEffects.FlipHorizontally;
+                    shouldMove = true;
+                }
+                else if (keyboardState.IsKeyDown(Keys.Right))
+                {
+                    targetPosition.X += GridSize;
+                    spriteEffect = SpriteEffects.None;
+                    shouldMove = true;
+                }
+
+                if (keyboardState.IsKeyDown(Keys.Up) && collisionManager.IsOnLadder(Boundary))
+                {
+                    targetPosition.Y -= GridSize;
+                    shouldMove = true;
+                }
+                else if (keyboardState.IsKeyDown(Keys.Down) && collisionManager.IsOnLadder(Boundary))
+                {
+                    targetPosition.Y += GridSize;
+                    shouldMove = true;
+                }
+
+                if (shouldMove)
+                {
+                    TryMove(targetPosition);
+                }
             }
 
-            if (keyboardState.IsKeyDown(Keys.Up) && collisionManager.IsOnLadder(Boundary))
-            {
-                Position = new Vector2(Position.X, Position.Y - 45);
-            }
-
-            if (KeyboardManager.HasBeenPressed(Keys.Up) && isOnGround)
+            // Handle jumping
+            if (KeyboardManager.HasBeenPressed(Keys.Space) && isOnGround)
             {
                 velocity.Y = JumpForce;
                 jumpTimer = JumpDuration;
@@ -67,12 +94,34 @@ namespace donkey_kong
             if (jumpTimer > 0)
             {
                 jumpTimer -= deltaTime;
-                if (jumpTimer <= 0 || !keyboardState.IsKeyDown(Keys.Up))
+                if (jumpTimer <= 0 || !keyboardState.IsKeyDown(Keys.Space))
                 {
                     jumpTimer = 0;
                     if (velocity.Y < 0)
                         velocity.Y *= 0.5f;
                 }
+            }
+        }
+
+        private void TryMove(Vector2 targetPosition)
+        {
+            // Create a rectangle for the proposed position
+            Rectangle proposedBounds = new Rectangle(
+                (int)targetPosition.X,
+                (int)targetPosition.Y,
+                Boundary.Width,
+                Boundary.Height
+            );
+
+            // Check if the move would result in a collision
+            if (!collisionManager.CheckCollision(proposedBounds))
+            {
+                // If no collision, perform the move and reset the timer
+                Position = targetPosition;
+                moveTimer = MoveDelay;
+
+                // Update the boundary after moving
+                UpdateBoundary();
             }
         }
 
