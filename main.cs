@@ -40,6 +40,7 @@ namespace donkey_kong
         private Vector2 marioPosition;
         private Vector2 paulinePosition;
         private Vector2 InitialMarioPosition;
+        private int lives;
 
         public main()
         {
@@ -63,6 +64,7 @@ namespace donkey_kong
             youwin = Content.Load<Texture2D>("youwin");
             youlose = Content.Load<Texture2D>("youlose");
             startTexture = Content.Load<Texture2D>("bender");
+            lives = 3;
 
 
 
@@ -77,6 +79,7 @@ namespace donkey_kong
 
             Vector2 marioPosition = FindCharacterPosition(strings, 'M');
             Vector2 paulinePosition = FindCharacterPosition(strings, 'P');
+            Vector2 enemyPosition = FindCharacterPosition(strings, 'E');
 
 
 
@@ -89,6 +92,13 @@ namespace donkey_kong
                 50,
                 50
             );
+
+            Rectangle enemyBoundary = new Rectangle(
+                (int)enemyPosition.X,
+                (int)enemyPosition.Y,
+                50,
+                50
+            );
             Vector2 initialPosition = new Vector2(playerBoundary.X, playerBoundary.Y);
 
             playerManager = new PlayerManager(
@@ -97,6 +107,14 @@ namespace donkey_kong
                 marioPosition,
                 collisionManager
             );
+
+            enemyManager = new EnemyManager(
+                enemyBoundary,
+                graphicsManager.enemy,
+                enemyPosition,
+                collisionManager
+            );
+
 
             paulineManager = new PaulineManager(graphicsManager, screenWidth)
             {
@@ -158,6 +176,16 @@ namespace donkey_kong
                         CurrentGameState = GameState.GameWon;
                     }
 
+                    if (playerManager.Boundary.Intersects(enemyManager.Boundary))
+                    {
+                        lives = lives - 1;
+                    }
+
+                    if (lives == 0)
+                    {
+                        CurrentGameState = GameState.GameOver;
+                    }
+
                     playerManager.Update(gameTime, collisionManager);
                     paulineManager.Update(gameTime, collisionManager);
                     base.Update(gameTime);
@@ -201,6 +229,7 @@ namespace donkey_kong
                     }
                     playerManager.Draw(spriteBatch);
                     paulineManager.Draw(spriteBatch);
+                    enemyManager.Draw(spriteBatch);
                     spriteBatch.End();
                     break;
 

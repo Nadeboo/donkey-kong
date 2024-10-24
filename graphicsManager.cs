@@ -13,6 +13,7 @@ namespace donkey_kong
         public Texture2D ladderTile { get; private set; }
         public Texture2D mario { get; private set; }
         public Texture2D pauline { get; private set; }
+        public Texture2D enemy { get; private set; }
 
         public GraphicsManager(ContentManager content)
         {
@@ -26,6 +27,7 @@ namespace donkey_kong
             ladderTile = content.Load<Texture2D>("ladder");
             mario = content.Load<Texture2D>("mario");
             pauline = content.Load<Texture2D>("pauline");
+            enemy = content.Load<Texture2D>("enemy");
         }
 
         public void DrawWalls(SpriteBatch spriteBatch, SpriteFont font, string text, List<string> strings)
@@ -46,8 +48,10 @@ namespace donkey_kong
                             break;
                         case 'M':  // Mario's starting position
                         case 'P':  // Pauline's starting position
+                        case 'E':
                             break;
                         case 'w':  // Wall
+
                         default:   // Any other character becomes a wall
                             spriteBatch.Draw(wallTile, position, Color.White);
                             break;

@@ -8,31 +8,31 @@ namespace donkey_kong
     {
         private GraphicsManager graphicsManager;
         private int speed;
-        private int bottomY;
-        private int topY;
         private int fallSpeed;
+        private SpriteEffects spriteEffect;
+        private CollisionManager collisionManager;
 
         public EnemyManager(
-            GraphicsManager graphicsManager,
             Rectangle boundary,
-            int speed,
             Texture2D sprite,
-            int bottomY,
-            int topY,
-            int fallSpeed,
-            Vector2 pos
-        ) : base(boundary, sprite, pos)
+            Vector2 position,
+            CollisionManager collisionManager
+        ) : base(boundary, sprite, position)
         {
-            this.graphicsManager = graphicsManager;
-            this.speed = speed;
-            this.bottomY = bottomY;
-            this.topY = topY;
-            this.fallSpeed = fallSpeed;
+            this.Gravity = 100f;
+            this.MaxFallSpeed = 100f;
+            this.spriteEffect = SpriteEffects.None;
+            this.collisionManager = collisionManager;
         }
 
         public override void Update(GameTime gameTime, CollisionManager collisionManager)
         {
             base.Update(gameTime, collisionManager);
         }
+        public  void Draw(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(Sprite, Position, null, Color.White, 0f, Vector2.Zero, 1f, spriteEffect, 0f);
+        }
     }
+
 }
