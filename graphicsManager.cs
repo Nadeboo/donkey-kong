@@ -46,7 +46,6 @@ namespace donkey_kong
                             break;
                         case 'M':  // Mario's starting position
                         case 'P':  // Pauline's starting position
-                            spriteBatch.Draw(floorTile, position, Color.White);
                             break;
                         case 'w':  // Wall
                         default:   // Any other character becomes a wall

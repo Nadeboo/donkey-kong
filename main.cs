@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using spaceInvaders;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography.X509Certificates;
 
 namespace donkey_kong
 {
@@ -36,6 +37,9 @@ namespace donkey_kong
         public bool start = false;
         private List<GraphicsManager> tiles;
         public List<string> strings = new List<string>();
+        private Vector2 marioPosition;
+        private Vector2 paulinePosition;
+        private Vector2 InitialMarioPosition;
 
         public main()
         {
@@ -73,6 +77,8 @@ namespace donkey_kong
 
             Vector2 marioPosition = FindCharacterPosition(strings, 'M');
             Vector2 paulinePosition = FindCharacterPosition(strings, 'P');
+
+
 
             font = Content.Load<SpriteFont>("font");
 
@@ -161,6 +167,8 @@ namespace donkey_kong
                     if (keyboardState.IsKeyDown(Keys.R))
                     {
                         CurrentGameState = GameState.InGame;
+                        Vector2 newMarioPosition = FindCharacterPosition(strings, 'M');
+                        playerManager.Position = newMarioPosition;
                     }
                     break;
             }
