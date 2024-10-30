@@ -10,7 +10,6 @@ namespace donkey_kong
 {
     public class main : Game
     {
-        // Graphics-related fields
         private GraphicsDeviceManager _graphics;
         private SpriteBatch spriteBatch;
         private GraphicsManager graphicsManager;
@@ -19,20 +18,17 @@ namespace donkey_kong
         private Texture2D youlose;
         private Texture2D startTexture;
 
-        // Game object managers
-        private List<EnemyManager> enemies;  // Changed to list
+        private List<EnemyManager> enemies; 
         private PlayerManager playerManager;
         private PaulineManager paulineManager;
         private CollisionManager collisionManager;
         private StartButton startButton;
 
-        // Game state and screen properties
         public enum GameState { Start, InGame, GameOver, GameWon }
         public GameState CurrentGameState;
         public int screenWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
         public int screenHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
 
-        // Game data
         public string text;
         public bool start = false;
         private List<GraphicsManager> tiles;
@@ -40,6 +36,8 @@ namespace donkey_kong
         private Vector2 marioPosition;
         private Vector2 paulinePosition;
         private Vector2 InitialMarioPosition;
+
+        private int lives = 3;
 
         public main()
         {
@@ -52,8 +50,8 @@ namespace donkey_kong
         {
             graphicsManager = new GraphicsManager(Content);
             collisionManager = new CollisionManager();
-            enemies = new List<EnemyManager>();  // Initialize enemy list
-            CurrentGameState = GameState.InGame;
+            enemies = new List<EnemyManager>();  
+            CurrentGameState = GameState.Start;
             base.Initialize();
         }
 
@@ -76,8 +74,8 @@ namespace donkey_kong
 
             Vector2 marioPosition = FindCharacterPosition(strings, 'M');
             Vector2 paulinePosition = FindCharacterPosition(strings, 'P');
+            InitialMarioPosition = marioPosition;
 
-            // Create all enemies
             for (int i = 0; i < strings.Count; i++)
             {
                 for (int j = 0; j < strings[i].Length; j++)
@@ -88,8 +86,8 @@ namespace donkey_kong
                         Rectangle enemyBoundary = new Rectangle(
                             (int)enemyPos.X,
                             (int)enemyPos.Y,
-                            76,  // Enemy sprite width
-                            40   // Enemy sprite height
+                            76, 
+                            40   
                         );
 
                         enemies.Add(new EnemyManager(
@@ -104,15 +102,12 @@ namespace donkey_kong
 
             font = Content.Load<SpriteFont>("font");
 
-            // Create the player
             Rectangle playerBoundary = new Rectangle(
                 (int)marioPosition.X,
                 (int)marioPosition.Y,
                 50,
                 50
             );
-
-            Vector2 initialPosition = new Vector2(playerBoundary.X, playerBoundary.Y);
 
             playerManager = new PlayerManager(
                 playerBoundary,
@@ -159,6 +154,12 @@ namespace donkey_kong
             {
                 case GameState.Start:
                     startButton.Update(mouseState);
+                    if (keyboardState.IsKeyDown(Keys.R))
+                    {
+                        CurrentGameState = GameState.InGame;
+                        playerManager.Position = InitialMarioPosition;
+                        lives = 3;
+                    }
                     if (startButton.IsClicked())
                     {
                         CurrentGameState = GameState.InGame;
@@ -181,16 +182,23 @@ namespace donkey_kong
                         CurrentGameState = GameState.GameWon;
                     }
 
-                    // Update all enemies
                     foreach (var enemy in enemies)
                     {
                         enemy.Update(gameTime, collisionManager);
 
-                        // Check for collision with player
                         if (enemy.Boundary.Intersects(playerManager.Boundary))
                         {
-                            CurrentGameState = GameState.GameOver;
-                            break;
+                            lives--;
+                            if (lives <= 0)
+                            {
+                                CurrentGameState = GameState.GameOver;
+                                break;
+                            }
+                            else
+                            {
+                                playerManager.Position = InitialMarioPosition;
+                                break;
+                            }
                         }
                     }
 
@@ -204,8 +212,8 @@ namespace donkey_kong
                     if (keyboardState.IsKeyDown(Keys.R))
                     {
                         CurrentGameState = GameState.InGame;
-                        Vector2 newMarioPosition = FindCharacterPosition(strings, 'M');
-                        playerManager.Position = newMarioPosition;
+                        playerManager.Position = InitialMarioPosition;
+                        lives = 3; 
                     }
                     break;
             }
@@ -237,7 +245,6 @@ namespace donkey_kong
                         graphicsManager.DrawWalls(spriteBatch, font, text, strings);
                     }
 
-                    // Draw all enemies
                     foreach (var enemy in enemies)
                     {
                         enemy.Draw(spriteBatch);
@@ -245,6 +252,9 @@ namespace donkey_kong
 
                     playerManager.Draw(spriteBatch);
                     paulineManager.Draw(spriteBatch);
+
+                    spriteBatch.DrawString(font, "Lives: " + lives, new Vector2(GraphicsDevice.Viewport.Width - 100, 10), Color.White);
+
                     spriteBatch.End();
                     break;
 

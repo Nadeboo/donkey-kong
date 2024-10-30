@@ -40,19 +40,19 @@ namespace donkey_kong
                     Vector2 position = new Vector2(50 * j, 50 * i);
                     switch (strings[i][j])
                     {
-                        case 'F':  // Floor
+                        case 'F':  
                             spriteBatch.Draw(floorTile, position, Color.White);
                             break;
-                        case '=':  // Ladder
+                        case '=':  
                             spriteBatch.Draw(ladderTile, position, Color.White);
                             break;
-                        case 'M':  // Mario's starting position
-                        case 'P':  // Pauline's starting position
+                        case 'M':  
+                        case 'P':  
                         case 'E':
                             break;
-                        case 'w':  // Wall
+                        case 'w':  
 
-                        default:   // Any other character becomes a wall
+                        default:   
                             spriteBatch.Draw(wallTile, position, Color.White);
                             break;
                     }

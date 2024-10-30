@@ -8,9 +8,9 @@ namespace donkey_kong
     public class PlayerManager : ObjectManager
     {
         private const float JumpForce = -100f;
-        private const float MoveDelay = 0.5f; // Half second delay between moves
-        private const int GridSize = 50; // Size of each movement step
-        private float moveTimer = 0f; // Timer to track movement delay
+        private const float MoveDelay = 0.5f; 
+        private const int GridSize = 50; 
+        private float moveTimer = 0f; 
         private float jumpTimer;
         private const float JumpDuration = 0.3f;
         private SpriteEffects spriteEffect;
@@ -33,7 +33,6 @@ namespace donkey_kong
         {
             float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            // Update move timer
             if (moveTimer > 0)
             {
                 moveTimer -= deltaTime;
@@ -47,7 +46,6 @@ namespace donkey_kong
         {
             KeyboardState keyboardState = Keyboard.GetState();
 
-            // Only process movement if the timer has expired
             if (moveTimer <= 0)
             {
                 Vector2 targetPosition = Position;
@@ -83,7 +81,6 @@ namespace donkey_kong
                 }
             }
 
-            // Handle jumping
             if (KeyboardManager.HasBeenPressed(Keys.Space) && isOnGround)
             {
                 velocity.Y = JumpForce;
@@ -105,7 +102,6 @@ namespace donkey_kong
 
         private void TryMove(Vector2 targetPosition)
         {
-            // Create a rectangle for the proposed position
             Rectangle proposedBounds = new Rectangle(
                 (int)targetPosition.X,
                 (int)targetPosition.Y,
@@ -113,14 +109,11 @@ namespace donkey_kong
                 Boundary.Height
             );
 
-            // Check if the move would result in a collision
             if (!collisionManager.CheckCollision(proposedBounds))
             {
-                // If no collision, perform the move and reset the timer
                 Position = targetPosition;
                 moveTimer = MoveDelay;
 
-                // Update the boundary after moving
                 UpdateBoundary();
             }
         }
